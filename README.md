@@ -13,3 +13,5 @@ node getData.js
 
 # Result
 in data/ fold
+
+![image-20241105164506644](img/image-20241105164506644.png)
