@@ -2,19 +2,12 @@
 // https://xueqiu.com/v4/statuses/user_timeline.json?page=8&user_id=2807872168&type=0&_=1717478351392
 
 
-const UID = '6014436876';
-const KEYWORD = '盘江';
+const UID = '1429872781';
+const KEYWORD = '药明';
 const SortFieldObj = {
     '转赞评': `reply_count,reply_count,fav_count,like_count`,
     '文章长度': 'text'
 }
-
-
-
-
-
-
-
 
 
 
