@@ -81,7 +81,7 @@ const simpifyList = (list, kw) => {
             '链接': `https://xueqiu.com${item.target}`,
             '日期': new Date(item.created_at).toLocaleDateString(),
             '得分': item.score,
-            '正文': item.text.removeStock().removeTag()
+            '正文': item.text
         }));
 };
 
