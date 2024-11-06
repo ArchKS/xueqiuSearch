@@ -8,7 +8,7 @@
 # Execute
 ```bash
 npm i
-node getData.js
+node main.js
 ```
 
 # Result

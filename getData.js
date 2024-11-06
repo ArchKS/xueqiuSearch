@@ -186,22 +186,18 @@ const searchSpecInvestorsArticle = (obj, sortfields) => {
 
         let url = `https://xueqiu.com/query/v1/user/status/search.json?q=${obj.kw}&page=1&uid=${obj.uid}&sort=time&comment=0&_=${new Date().getTime()}`;
 
-        if (fs.existsSync(obj.fileName + ".json")) { // 文件存在
-            processDataFromFile(obj.kw);
-        } else {
-            let { maxPage, list } = await service.get(url);
-            console.log(`url:${url}`);
-            for (let p = 2; p <= maxPage; p++) {
-
-                url = `https://xueqiu.com/query/v1/user/status/search.json?q=${obj.kw}&page=${p}&uid=${obj.uid}&sort=time&comment=0&_=${new Date().getTime()}`;
-                let { list: addList } = await service.get(url);
-                list = [...addList, ...list];
-                console.log(`${p}/${maxPage}页`);
-            }
-            // saveDataToFile(list, `${obj.fileName}.json`);
-            // processDataFromFile(obj);
-            setArrToExcel(list, obj, sortfields);
+        let { maxPage, list } = await service.get(url);
+        console.log(`url:${url}`);
+        for (let p = 2; p <= maxPage; p++) {
+            url = `https://xueqiu.com/query/v1/user/status/search.json?q=${obj.kw}&page=${p}&uid=${obj.uid}&sort=time&comment=0&_=${new Date().getTime()}`;
+            let { list: addList } = await service.get(url);
+            list = [...addList, ...list];
+            console.log(`${p}/${maxPage}页`);
         }
+        // saveDataToFile(list, `${obj.fileName}.json`);
+        // processDataFromFile(obj);
+        setArrToExcel(list, obj, sortfields);
+
         resolve(true);
     })
 
