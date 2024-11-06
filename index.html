@@ -11,6 +11,7 @@
 
         html {
             font-family: cursive;
+            background-color: #F0F0F0;
         }
 
         #table-container {
@@ -33,7 +34,9 @@
             border: 1px solid #ccc;
             margin: 10px;
             padding: 10px;
-            min-width: 50%;
+            min-width: 45%;
+            width: 45%;
+            background-color: #fff;
         }
 
         .td-0,
@@ -55,7 +58,7 @@
 
         .td-4 {
             max-width: 100%;
-            max-height: 100px;
+            max-height: 300px;
             padding: 10px 3px;
             overflow-y: auto;
             display: block;
@@ -70,7 +73,7 @@
 
         #adh #adhr {
             position: absolute;
-            right: 0;
+            right: 20px;
             width: 40%;
             bottom: 50%;
             transform: translateY(50%);
@@ -89,7 +92,7 @@
     <div id="render-table">
         <div id="table-container"></div>
         <div id="adh">
-            <input type="range" name="adhr" id="adhr" min="100" max="1000" value="100">
+            <input type="range" name="adhr" id="adhr" min="100" max="1000" value="300">
             <div id="adhb"></div>
         </div>
     </div>
