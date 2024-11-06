@@ -5,37 +5,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="./echarts.min.js"></script>
-    <script src="./draw.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.mini.min.js"></script>
+    <style>
+        html {
+            font-family: cursive;
+        }
+
+        #table-container {
+            height: 94vh;
+            overflow-y: auto;
+        }
+
+        #table-container::-webkit-scrollbar,
+        .td-4::-webkit-scrollbar {
+            width: 0;
+        }
+
+        #table-container thead {
+            display: none;
+        }
+
+
+        .info-tr {
+            display: inline-block;
+            border: 1px solid #ccc;
+            margin: 10px;
+            padding: 10px;
+            min-width: 50%;
+        }
+
+        .td-0,
+        .td-1,
+        .td-2 {
+            width: fit-content;
+            white-space: nowrap;
+            min-width: 100px;
+        }
+
+        .td-0 a {
+            text-decoration: none;
+        }
+
+        .td-1,
+        .td-2 {
+            text-align: center;
+        }
+
+        .td-4 {
+            max-width: 100%;
+            max-height: 100px;
+            padding: 10px 3px;
+            overflow-y: auto;
+            display: block;
+        }
+
+        #adh {
+            position: fixed;
+            right: 0;
+            bottom: 2vh;
+            left: 0px;
+        }
+
+        #adh #adhr {
+            position: absolute;
+            right: 0;
+            width: 40%;
+            bottom: 50%;
+            transform: translateY(50%);
+        }
+    </style>
 </head>
 
 <body>
-    <div id="main" style="width: 100%;height:90vh;margin-top:5vh;"></div>
-
+    <div id="table-container"></div>
+    <div id="adh">
+        <input type="range" name="adhr" id="adhr" min="100" max="1000" value="100">
+        <div id="adhb"></div>
+    </div>
 </body>
 
 </html>
+
+
 <script>
-    window.IdObj = {
-        "2807872168": "凯文直言", 
-        "8790885129": "超级鹿鼎公", 
-        "1505944393": "雪月霜", 
+    var visibleRg = false;
+    const adjustHeight = () => {
+        let adhr = document.getElementById('adhr');
+        adhr.oninput = (e) => {
+            console.log(e.target.value);
+            document.querySelectorAll('.info-tr .td-4').forEach(item => {
+                item.style.maxHeight = e.target.value + 'px';
+            })
+        }
+
     }
-    window.AVG = 60;
-</script>
+    const renderExcel = async () => {
+        const filePath =
+            `/data/${new URLSearchParams(new URL(window.location.href).search).get('file')}.xlsx`; // xlsx链接地址
+        const wb = XLSX.read(await (await fetch(filePath)).arrayBuffer());
 
-<script type="module">
-    var myChart = echarts.init(document.getElementById('main'));
-    let uid = (new URLSearchParams(new URL(window.location.href).search)).get('uid') || '';
-
-
-    fetch(`/data/xueqiu${uid}.json`) // 假设data.json是外部的JSON文件
-        .then(response => response.json()) // 解析JSON
-        .then(data => {
-            console.log(data); // 使用数据
-            myChart.setOption(getOption(data, uid));
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const data = XLSX.utils.sheet_to_json(ws, {
+            header: 1
         });
+        const tableEl = document.getElementById('table-container');
+        let theaderContent = '';
+        data[0].forEach(headItem => { // index = 0 是表头信息
+            theaderContent += `<th>${headItem}</th>`;
+        });
+        let tableRowContent = '';
+        data.forEach((row, index) => {
+            if (index !== 0) {
+                let currRow = `<tr class="info-tr">`;
+                row.forEach((rowItem, columnIndex) => {
+                    let content = rowItem;
+                    if (columnIndex == 0) {
+                        rowItem = rowItem ? rowItem : 'Empty'
+                        content = `<a href="${row[1]}" target="_blank">《${rowItem}》</a>`;
+                        currRow += `<td class="td-${columnIndex}">${content}</td>`
+                    } else if (columnIndex == 1) {
+
+                    } else {
+                        currRow += `<td class="td-${columnIndex}">${content}</td>`
+                    }
+
+
+                });
+                currRow += `</tr>`;
+                tableRowContent += currRow;
+            }
+        });
+        tableEl.innerHTML =
+            `<table> <thead><tr>${theaderContent}</tr></thead> <tbody>${tableRowContent}</tbody> </table>`;
+
+        adjustHeight();
+    }
+
+    renderExcel();
 </script>
