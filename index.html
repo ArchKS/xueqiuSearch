@@ -7,6 +7,8 @@
     <title>Document</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.mini.min.js"></script>
     <style>
+       
+
         html {
             font-family: cursive;
         }
@@ -16,7 +18,7 @@
             overflow-y: auto;
         }
 
-        #table-container::-webkit-scrollbar,
+        /*  #table-container::-webkit-scrollbar, */
         .td-4::-webkit-scrollbar {
             width: 0;
         }
@@ -73,14 +75,29 @@
             bottom: 50%;
             transform: translateY(50%);
         }
+
+        #render-list {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+        }
     </style>
 </head>
 
 <body>
-    <div id="table-container"></div>
-    <div id="adh">
-        <input type="range" name="adhr" id="adhr" min="100" max="1000" value="100">
-        <div id="adhb"></div>
+    <div id="render-table">
+        <div id="table-container"></div>
+        <div id="adh">
+            <input type="range" name="adhr" id="adhr" min="100" max="1000" value="100">
+            <div id="adhb"></div>
+        </div>
+    </div>
+    <div id="render-list">
+        <!-- render --> 
+ <a href="?file=/data/超级鹿鼎公_神华.xlsx" target="_blank">超级鹿鼎公_神华.xlsx</a><br>
+<a href="?file=/data/雪月霜_神华.xlsx" target="_blank">雪月霜_神华.xlsx</a><br> 
+ <!-- render -->
     </div>
 </body>
 
@@ -88,7 +105,9 @@
 
 
 <script>
-    var visibleRg = false;
+    const fileName = new URLSearchParams(new URL(window.location.href).search).get('file');
+
+
     const adjustHeight = () => {
         let adhr = document.getElementById('adhr');
         adhr.oninput = (e) => {
@@ -100,9 +119,7 @@
 
     }
     const renderExcel = async () => {
-        const filePath =
-            `/data/${new URLSearchParams(new URL(window.location.href).search).get('file')}.xlsx`; // xlsx链接地址
-        const wb = XLSX.read(await (await fetch(filePath)).arrayBuffer());
+        const wb = XLSX.read(await (await fetch(fileName)).arrayBuffer());
 
         const ws = wb.Sheets[wb.SheetNames[0]];
         const data = XLSX.utils.sheet_to_json(ws, {
@@ -140,6 +157,21 @@
 
         adjustHeight();
     }
+    const renderList = () => {
+        let fileList = [
 
-    renderExcel();
+        ];
+    }
+
+    let rt = document.getElementById("render-table");
+    let rl = document.getElementById("render-list");
+    if (fileName) {
+        rt.style.display = "block";
+        rl.style.display = "none";
+        renderExcel();
+    } else {
+        rl.style.display = "block";
+        rt.style.display = "none";
+        renderList();
+    }
 </script>

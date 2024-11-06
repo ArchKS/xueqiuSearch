@@ -1,4 +1,33 @@
 const { searchSpecInvestorsArticle } = require('./getData')
+const fs = require('fs').promises;
+const path = require('path');
+
+const htmlPath = 'index.html';
+
+async function listFilesInDirectory(directory) {
+  try {
+    // 读取目录内容
+    const entries = await fs.readdir(directory, { withFileTypes: true });
+
+    // 过滤出文件，排除目录
+    const files = entries.filter(entry => entry.isFile());
+
+    // 打印文件名
+    let filePath = files.map(v=>`<a href="?file=/data/${v.name}" target="_blank">${v.name}</a><br>`).join('\n');
+
+    const content = await fs.readFile(htmlPath, 'utf8');
+    const regex = /\<\!-- render --\>[\s\S]*?\<\!-- render --\>/g;
+    const newContentWithRegex = content.replace(regex, `<!-- render --> \n ${filePath} \n <!-- render -->`);
+
+    await fs.writeFile(htmlPath, newContentWithRegex, 'utf8');
+    console.log('Content replaced successfully.');
+
+  } catch (error) {
+    console.error('Error reading directory:', error);
+  }
+}
+
+
 
 // 本地: http://localhost:3142/index.html?file=%E8%A1%8C%E8%97%8F_%E8%8D%AF%E6%98%8E
 // 部署:  https://vercel.com/archks-projects/xueqiu-search
@@ -7,14 +36,14 @@ const { searchSpecInvestorsArticle } = require('./getData')
 
 let listObj = [
     {
-        uid: '2864315423',
-        kw: '药明',
-        name: '行藏'
+        uid: '8790885129',
+        kw: '神华',
+        name: '超级鹿鼎公'
     },
     {
-        uid: '1429872781',
-        kw: '药明',
-        name: 'LTLyra'
+        uid: '1505944393',
+        kw: '神华',
+        name: '雪月霜'
     }
 ]
 
@@ -25,10 +54,16 @@ const sortfields = {
 }
 
 
+const main = async ()=>{
 
-for (let index = 0; index < listObj.length; index++) {
-    (async () => {
-        let obj  = listObj[index];
-        let mark = await searchSpecInvestorsArticle(obj, sortfields)
-    })();
+    for (let obj of listObj) {
+        await searchSpecInvestorsArticle(obj, sortfields);
+    }
+    
+    // 替换成你的data文件夹的路径
+    const dataDirectory = path.join(__dirname, 'data');
+    listFilesInDirectory(dataDirectory);
 }
+
+
+main();

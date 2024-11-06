@@ -104,7 +104,7 @@ const getArrayData = (data) => {
 
 
 
-const setArrToExcel = (list, obj, sortfields) => {
+const setArrToExcel = (list, obj, sortfields,rs) => {
     let workbook = XLSX.utils.book_new();
     Object.keys(sortfields).forEach(key => {
         let fmtList = sortSearchData(list, sortfields[key]);
@@ -158,23 +158,24 @@ const setArrToExcel = (list, obj, sortfields) => {
     // 将工作簿写入Excel文件 
     XLSX.writeFile(workbook, `${obj.fileName}.xlsx`);
     console.log(`save to ${obj.fileName}.xlsx`);
+    rs && rs(true);
 }
 
-const processDataFromFile = (obj) => {
+// const processDataFromFile = (obj) => {
 
-    fs.readFile(obj.fileName + '.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error('读取文件时出错:', err);
-            return;
-        }
-        try {
-            const list = JSON.parse(data);
-            setArrToExcel(list, obj);
-        } catch (parseErr) {
-            console.error('解析JSON时出错:', parseErr);
-        }
-    });
-}
+//     fs.readFile(obj.fileName + '.json', 'utf8', (err, data) => {
+//         if (err) {
+//             console.error('读取文件时出错:', err);
+//             return;
+//         }
+//         try {
+//             const list = JSON.parse(data);
+//             setArrToExcel(list, obj);
+//         } catch (parseErr) {
+//             console.error('解析JSON时出错:', parseErr);
+//         }
+//     });
+// }
 
 
 
@@ -196,9 +197,7 @@ const searchSpecInvestorsArticle = (obj, sortfields) => {
         }
         // saveDataToFile(list, `${obj.fileName}.json`);
         // processDataFromFile(obj);
-        setArrToExcel(list, obj, sortfields);
-
-        resolve(true);
+        setArrToExcel(list, obj, sortfields,resolve);
     })
 
 
