@@ -185,6 +185,11 @@ const searchSpecInvestorsArticle = (obj, sortfields) => {
     return new Promise(async (resolve, reject) => {
         obj.fileName = `./data/${obj.name}_${obj.kw}`;
 
+        if(fs.existsSync(obj.fileName+'.xlsx')){
+            console.log(`已存在 ${obj.fileName}.xlsx`);
+            resolve(true);
+            return;
+        }
         let url = `https://xueqiu.com/query/v1/user/status/search.json?q=${obj.kw}&page=1&uid=${obj.uid}&sort=time&comment=0&_=${new Date().getTime()}`;
 
         let { maxPage, list } = await service.get(url);

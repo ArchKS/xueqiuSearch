@@ -7,11 +7,21 @@
     <title>Document</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.mini.min.js"></script>
     <style>
-       
-
-        html {
+        body {
             font-family: cursive;
             background-color: #F0F0F0;
+        }
+
+        body.dark {
+            background-color: #303030;
+            color: rgba(255, 255, 255, .7);
+        }
+        body.dark .info-tr{
+            background-color: #242426;
+            border: 1px solid #333;
+        }
+        body.dark .info-tr td a{
+            color: #0A6EDB;
         }
 
         #table-container {
@@ -83,7 +93,19 @@
             position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%);
+            transform: translate(-50%, -50%);
+        }
+
+        #darked {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            position: absolute;
+            left: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #000;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -92,15 +114,17 @@
     <div id="render-table">
         <div id="table-container"></div>
         <div id="adh">
+            <div id="darked" data-theme="light"></div>
             <input type="range" name="adhr" id="adhr" min="100" max="1000" value="300">
-            <div id="adhb"></div>
+
         </div>
     </div>
     <div id="render-list">
-        <!-- render --> 
- <a href="?file=/data/超级鹿鼎公_神华.xlsx" target="_blank">超级鹿鼎公_神华.xlsx</a><br>
-<a href="?file=/data/雪月霜_神华.xlsx" target="_blank">雪月霜_神华.xlsx</a><br> 
- <!-- render -->
+        <!-- render -->
+        <a href="?file=/data/子洲_神华.xlsx" target="_blank">子洲_神华.xlsx</a><br>
+        <a href="?file=/data/超级鹿鼎公_神华.xlsx" target="_blank">超级鹿鼎公_神华.xlsx</a><br>
+        <a href="?file=/data/雪月霜_神华.xlsx" target="_blank">雪月霜_神华.xlsx</a><br>
+        <!-- render -->
     </div>
 </body>
 
@@ -110,7 +134,24 @@
 <script>
     const fileName = new URLSearchParams(new URL(window.location.href).search).get('file');
 
-
+    const adjustDark = () => {
+        let dkd = document.getElementById('darked');
+        let theme = localStorage.getItem('theme') || 'light';
+        dkd.dataset.theme = theme;
+        dkd.style.backgroundColor = theme == 'light' ? '#000' : '#fff';
+        document.body.className = theme;
+        
+        dkd.onclick = () => {
+            let {
+                theme
+            } = dkd.dataset;
+            theme = theme == 'light' ? 'dark' : 'light';
+            dkd.dataset.theme = theme;
+            dkd.style.backgroundColor = theme == 'light' ? '#000' : '#fff';
+            document.body.className = theme;
+            localStorage.setItem('theme', theme);
+        }
+    }
     const adjustHeight = () => {
         let adhr = document.getElementById('adhr');
         adhr.oninput = (e) => {
@@ -159,11 +200,7 @@
             `<table> <thead><tr>${theaderContent}</tr></thead> <tbody>${tableRowContent}</tbody> </table>`;
 
         adjustHeight();
-    }
-    const renderList = () => {
-        let fileList = [
-
-        ];
+        adjustDark();
     }
 
     let rt = document.getElementById("render-table");
@@ -175,6 +212,5 @@
     } else {
         rl.style.display = "block";
         rt.style.display = "none";
-        renderList();
     }
 </script>
