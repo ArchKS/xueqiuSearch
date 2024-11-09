@@ -37,17 +37,17 @@ async function listFilesInDirectory(directory) {
 let listObj = [
     {
         uid: '8790885129',
-        kw: '神华',
+        kw: '煤炭',
         name: '超级鹿鼎公'
     },
     {
         uid: '1505944393',
-        kw: '神华',
+        kw: '煤炭',
         name: '雪月霜'
     },
     {
       uid: '7123126150',
-      kw: '神华',
+      kw: '煤炭',
       name: '子洲'
     }
 ]
